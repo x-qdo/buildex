@@ -1,0 +1,127 @@
+# BuildEx Default Configuration
+# This file contains default settings for the BuildEx CLI tool
+
+# AWS Configuration
+aws:
+  # AWS region to use for EC2 instances
+  region: eu-west-1
+
+  # AWS profile to use (leave empty for default)
+  profile: ""
+
+  # Default EC2 instance type
+  instance_type: t3.medium
+
+  # SSH key pair name (will be created if it doesn't exist)
+  key_name: buildex-key
+
+  # Security group name (will be created if it doesn't exist)
+  security_group: buildex-sg
+
+  # Use spot instances by default
+  use_spot: false
+
+  # Specific AMI ID (leave empty to auto-select latest Amazon Linux 2023)
+  ami: ""
+
+  # Root volume size in GB
+  volume_size: 40
+
+  # Subnet ID (leave empty to use default VPC)
+  subnet_id: ""
+
+  # Additional tags to apply to instances
+  tags:
+    Project: buildex
+    Environment: development
+
+  # Platform-specific configurations (optional)
+  # Uncomment and customize as needed for different architectures
+  platforms:
+    "linux/arm64":
+      instance_type: m7g.large # ARM-based instance
+      # use_spot: true              # Use spot instances for cost savings
+      # volume_size: 30             # Larger volume for ARM builds
+    "linux/amd64":
+      instance_type: m5.large # x86 instance
+      # use_spot: false             # Use on-demand for reliability
+      # volume_size: 40             # Larger volume for complex builds
+
+# Docker Buildx Configuration
+buildx:
+  # Default builder name for permanent workers
+  # All platforms will be added to this single builder
+  builder_name: buildex-permanent
+
+  # Default target platforms
+  platforms:
+    - linux/amd64
+    - linux/arm64
+
+  # Additional driver options
+  driver_opts: []
+
+  # Default build arguments
+  build_args: []
+
+  # Push images by default
+  push: false
+
+  # Load single-platform images to local docker
+  load: false
+
+# SSH Configuration
+ssh:
+  # SSH username (default for Amazon Linux 2023)
+  user: ec2-user
+
+  # SSH port
+  port: 22
+
+  # SSH connection timeout
+  timeout: 60s
+
+  # SSH private key path (auto-determined if empty)
+  key_path: ""
+
+  # Use strict host key checking
+  strict_host: false
+
+# User Interface Configuration
+ui:
+  # Use split-screen view for multi-platform builds
+  split_screen: true
+
+  # Show timestamps in output
+  show_timestamps: true
+
+  # Use colors in output
+  colors: true
+
+  # Show spinner animations
+  spinner: true
+
+# Timeout Configuration
+timeouts:
+  # Time to wait for EC2 instance to start
+  instance_startup: 300s
+
+  # Time to wait for Docker to be ready
+  docker_ready: 120s
+
+  # Default build timeout (0 means no timeout)
+  build_timeout: 3600s
+
+  # SSH connection timeout
+  ssh_connect: 60s
+
+# State Management Configuration
+state:
+  # Directory to store state files (auto-determined if empty)
+  dir: ""
+
+  # State file name
+  file_name: state.yaml
+
+  # Automatically save state changes
+  auto_save: true
