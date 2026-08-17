@@ -69,6 +69,8 @@ var (
 	buildAutoUseExisting bool
 	buildProvenance      string
 	buildContexts        []string
+	buildCacheFrom       []string
+	buildCacheTo         []string
 )
 
 func init() {
@@ -91,6 +93,8 @@ func init() {
 	buildCmd.Flags().StringVar(&buildProgress, "progress", "auto", "Progress output type (auto, plain, tty)")
 	buildCmd.Flags().BoolVar(&buildAutoUseExisting, "auto-use-existing", true, "Automatically detect and use existing workers (default: true)")
 	buildCmd.Flags().StringVar(&buildProvenance, "provenance", "", "Generate provenance attestation for the build (e.g., mode=max)")
+	buildCmd.Flags().StringArrayVar(&buildCacheFrom, "cache-from", nil, "External cache sources (e.g. type=registry,ref=myrepo:cache)")
+	buildCmd.Flags().StringArrayVar(&buildCacheTo, "cache-to", nil, "Cache export destinations (e.g. type=registry,ref=myrepo:cache,mode=max)")
 
 	// Bind flags to viper
 	viper.BindPFlag("build.platforms", buildCmd.Flags().Lookup("platform"))
@@ -522,6 +526,14 @@ func prepareBuildArgs(context string, platforms []string, builderName string) []
 	// Add build contexts
 	for _, context := range buildContexts {
 		args = append(args, "--build-context", context)
+	}
+
+	// Add cache sources and destinations
+	for _, cache := range buildCacheFrom {
+		args = append(args, "--cache-from", cache)
+	}
+	for _, cache := range buildCacheTo {
+		args = append(args, "--cache-to", cache)
 	}
 
 	return args
