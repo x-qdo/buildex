@@ -167,6 +167,7 @@ func runStart(cmd *cobra.Command, args []string) error {
 
 	// Launch workers for each platform
 	workers := make([]*config.WorkerState, 0, len(platforms))
+	newWorkers := make([]*config.WorkerState, 0, len(platforms))
 	ctx := context.Background()
 
 	for _, platform := range platforms {
@@ -176,6 +177,7 @@ func runStart(cmd *cobra.Command, args []string) error {
 		if existingWorker, exists := state.GetWorker(platformWorkerName); exists {
 			if existingWorker.Status == "running" {
 				logrus.WithField("worker", platformWorkerName).Info("Worker already running")
+				workers = append(workers, existingWorker)
 				continue
 			}
 		}
@@ -224,6 +226,7 @@ func runStart(cmd *cobra.Command, args []string) error {
 		// Add to state
 		state.AddWorker(worker)
 		workers = append(workers, worker)
+		newWorkers = append(newWorkers, worker)
 
 		if startSaveState {
 			if err := config.SaveState(state); err != nil {
@@ -254,7 +257,7 @@ func runStart(cmd *cobra.Command, args []string) error {
 	logrus.Info("Starting worker setup process")
 
 	// Wait for workers to be ready and set up buildx
-	for _, worker := range workers {
+	for _, worker := range newWorkers {
 
 		logrus.WithFields(logrus.Fields{
 			"worker":     worker.Name,
