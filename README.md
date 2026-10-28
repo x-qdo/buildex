@@ -11,7 +11,7 @@ BuildEx is a CLI tool that manages Docker buildx workers on EC2 Spot instances f
 
 ## 📋 Prerequisites
 
-- Go 1.24 or later
+- Go 1.27.3 or later
 - Docker with buildx enabled
 - AWS CLI configured with appropriate permissions
 - SSH client
